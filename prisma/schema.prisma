@@ -25,6 +25,7 @@ model User {
   roles       Role[]
   sessions    Session[]
   connections Connection[]
+  Board       Board[]
 }
 
 model Note {
@@ -166,4 +167,41 @@ model Connection {
   userId String
 
   @@unique([providerName, providerId])
+}
+
+model Board {
+  id        Int      @id @default(autoincrement())
+  name      String
+  color     String   @default("#e0e0e0")
+  createdAt DateTime @default(now())
+  columns   Column[]
+  items     Item[]
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+}
+
+model Column {
+  id      String @id @default(uuid())
+  name    String
+  order   Float  @default(0)
+  items   Item[]
+  Board   Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  boardId Int
+}
+
+model Item {
+  id      String  @id @default(uuid())
+  title   String
+  content String?
+
+  // we split the difference between the prev/next items. If an item is dropped
+  // between 1.00 and 2.00 it will be 1.50. If dropped between 1.50 and 2.00 it
+  // will be 1.75, etc.
+  order Float
+
+  Column   Column @relation(fields: [columnId], references: [id], onDelete: Cascade)
+  columnId String
+
+  Board   Board @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  boardId Int
 }

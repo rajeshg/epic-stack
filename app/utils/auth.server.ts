@@ -43,6 +43,21 @@ export async function getUserId(request: Request) {
 	return session.user.id
 }
 
+export async function getUserById(userId: User['id']) {
+	return prisma.user.findUnique({
+		where: { id: userId },
+		select: {
+			id: true,
+			email: true,
+			username: true,
+			name: true,
+			image: true,
+			connections: true,
+			roles: true,
+		},
+	})
+}
+
 export async function requireUserId(
 	request: Request,
 	{ redirectTo }: { redirectTo?: string | null } = {},
