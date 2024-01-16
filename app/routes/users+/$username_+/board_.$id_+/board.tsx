@@ -122,7 +122,7 @@ function usePendingColumns() {
 // These are the inflight items that are being created or moved, instead of
 // managing state ourselves, we just ask Remix for the state
 function usePendingItems() {
-	type PendingItem = ReturnType<typeof useFetchers>[0] & {
+	type PendingItem = ReturnType<typeof useFetchers>[number] & {
 		formData: FormData
 	}
 	return useFetchers()
